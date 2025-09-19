@@ -14,16 +14,16 @@ export default function HomePage() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-primary">ProjectFlow</h1>
-          <p className="text-muted-foreground">Professional project management for modern teams</p>
+          <p className="text-muted-foreground">Sistema Profesional de Gestión de Proyectos y Logística</p>
         </div>
 
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">{isLogin ? "Sign In" : "Create Account"}</CardTitle>
+            <CardTitle className="text-2xl text-center">{isLogin ? "Iniciar Sesión" : "Crear Cuenta"}</CardTitle>
             <CardDescription className="text-center">
               {isLogin
-                ? "Enter your credentials to access your projects"
-                : "Get started with your project management journey"}
+                ? "Ingresa tus credenciales para acceder a tus proyectos"
+                : "Comienza tu experiencia en gestión de proyectos"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -35,7 +35,7 @@ export default function HomePage() {
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-sm text-muted-foreground hover:text-primary"
               >
-                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
               </Button>
             </div>
           </CardContent>

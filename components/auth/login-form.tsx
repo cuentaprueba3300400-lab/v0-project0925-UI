@@ -23,11 +23,11 @@ export function LoginForm() {
 
     // Simulate authentication
     setTimeout(() => {
-      if (email === "admin@projectflow.com" && password === "admin123") {
+      if (email === "admin@project.com" && password === "admin123") {
         // Redirect to dashboard
         window.location.href = "/dashboard"
       } else {
-        setError("Invalid email or password")
+        setError("Email o contraseña incorrectos")
       }
       setIsLoading(false)
     }, 1000)
@@ -42,13 +42,13 @@ export function LoginForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Correo Electrónico</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Ingresa tu correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="pl-10"
@@ -58,13 +58,13 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Contraseña</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
+            placeholder="Ingresa tu contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="pl-10 pr-10"
@@ -87,14 +87,8 @@ export function LoginForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Signing in..." : "Sign In"}
+        {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
       </Button>
-
-      <div className="text-center">
-        <Button variant="link" className="text-sm text-muted-foreground">
-          Forgot your password?
-        </Button>
-      </div>
     </form>
   )
 }

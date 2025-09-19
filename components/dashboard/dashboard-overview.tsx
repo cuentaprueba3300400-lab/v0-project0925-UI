@@ -3,38 +3,40 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FolderKanban, CheckSquare, Users, Clock, AlertTriangle, Download, BarChart3 } from "lucide-react"
+import { FolderKanban, CheckSquare, Users, Clock, AlertTriangle, Download, BarChart3, Bell } from "lucide-react"
 import { PerformanceCharts } from "./performance-charts"
 import { TeamProductivity } from "./team-productivity"
 import { ProjectTimeline } from "./project-timeline"
+import { CustomizableWidgets } from "./customizable-widgets"
+import { NotificationCenter } from "./notification-center"
 
 export function DashboardOverview() {
   const stats = [
     {
-      title: "Active Projects",
+      title: "Proyectos Activos",
       value: "12",
-      change: "+2 from last month",
+      change: "+2 desde el mes pasado",
       icon: FolderKanban,
       color: "text-primary",
     },
     {
-      title: "Completed Tasks",
+      title: "Tareas Completadas",
       value: "248",
-      change: "+18% from last week",
+      change: "+18% desde la semana pasada",
       icon: CheckSquare,
       color: "text-accent",
     },
     {
-      title: "Team Members",
+      title: "Miembros del Equipo",
       value: "24",
-      change: "+3 new members",
+      change: "+3 nuevos miembros",
       icon: Users,
       color: "text-secondary",
     },
     {
-      title: "Overdue Tasks",
+      title: "Tareas Vencidas",
       value: "7",
-      change: "-2 from yesterday",
+      change: "-2 desde ayer",
       icon: AlertTriangle,
       color: "text-destructive",
     },
@@ -42,22 +44,22 @@ export function DashboardOverview() {
 
   const recentProjects = [
     {
-      name: "Website Redesign",
-      status: "In Progress",
+      name: "Rediseño del Sitio Web",
+      status: "En Progreso",
       progress: 75,
       dueDate: "2024-01-15",
       team: 5,
     },
     {
-      name: "Mobile App Development",
-      status: "Planning",
+      name: "Desarrollo de App Móvil",
+      status: "Planificación",
       progress: 25,
       dueDate: "2024-02-28",
       team: 8,
     },
     {
-      name: "Marketing Campaign",
-      status: "Review",
+      name: "Campaña de Marketing",
+      status: "Revisión",
       progress: 90,
       dueDate: "2024-01-10",
       team: 3,
@@ -68,22 +70,24 @@ export function DashboardOverview() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Welcome back, John!</h1>
-          <p className="text-muted-foreground text-pretty">Here's what's happening with your projects today.</p>
+          <h1 className="text-3xl font-bold text-balance">¡Bienvenido de nuevo, Juan!</h1>
+          <p className="text-muted-foreground text-pretty">Esto es lo que está pasando con tus proyectos hoy.</p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="icon">
+            <Bell className="h-4 w-4" />
+          </Button>
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Export Report
+            Exportar Reporte
           </Button>
           <Button>
             <BarChart3 className="mr-2 h-4 w-4" />
-            Generate Report
+            Generar Reporte
           </Button>
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.title}>
@@ -99,20 +103,24 @@ export function DashboardOverview() {
         ))}
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="widgets" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="team">Team Analytics</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsTrigger value="widgets">Panel Personalizable</TabsTrigger>
+          <TabsTrigger value="overview">Resumen</TabsTrigger>
+          <TabsTrigger value="performance">Rendimiento</TabsTrigger>
+          <TabsTrigger value="team">Análisis del Equipo</TabsTrigger>
+          <TabsTrigger value="timeline">Cronología</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="widgets">
+          <CustomizableWidgets />
+        </TabsContent>
+
         <TabsContent value="overview" className="space-y-4">
-          {/* Recent Projects */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Projects</CardTitle>
-              <CardDescription>Your most active projects and their current status</CardDescription>
+              <CardTitle>Proyectos Recientes</CardTitle>
+              <CardDescription>Tus proyectos más activos y su estado actual</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -123,9 +131,9 @@ export function DashboardOverview() {
                         <h4 className="font-medium">{project.name}</h4>
                         <Badge
                           variant={
-                            project.status === "In Progress"
+                            project.status === "En Progreso"
                               ? "default"
-                              : project.status === "Planning"
+                              : project.status === "Planificación"
                                 ? "secondary"
                                 : "outline"
                           }
@@ -136,11 +144,11 @@ export function DashboardOverview() {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          Due {project.dueDate}
+                          Vence {project.dueDate}
                         </div>
                         <div className="flex items-center gap-1">
                           <Users className="h-3 w-3" />
-                          {project.team} members
+                          {project.team} miembros
                         </div>
                       </div>
                       <Progress value={project.progress} className="h-2" />
@@ -165,6 +173,8 @@ export function DashboardOverview() {
           <ProjectTimeline />
         </TabsContent>
       </Tabs>
+
+      <NotificationCenter />
     </div>
   )
 }

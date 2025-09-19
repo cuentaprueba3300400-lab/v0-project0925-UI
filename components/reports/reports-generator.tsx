@@ -4,9 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
@@ -16,82 +15,79 @@ import {
   Download,
   CalendarIcon,
   BarChart3,
-  Clock,
   Target,
   FileSpreadsheet,
   FilePen as FilePdf,
+  Loader2,
 } from "lucide-react"
 import { format } from "date-fns"
+import { es } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 
-const reportTemplates = [
+const reportTypes = [
   {
-    id: "project-summary",
-    name: "Project Summary Report",
-    description: "Comprehensive overview of project status, progress, and key metrics",
-    category: "Project Management",
-    estimatedTime: "2-3 minutes",
-    includes: ["Project status", "Task completion", "Team performance", "Budget tracking"],
+    id: "task-progress",
+    name: "Reporte de Progreso de Tareas",
+    description: "Muestra el estado de todas las tareas, sus responsables y su avance",
+    category: "Gestión de Tareas",
+    estimatedTime: "2-3 minutos",
   },
   {
-    id: "team-performance",
-    name: "Team Performance Report",
-    description: "Individual and team productivity metrics and analysis",
-    category: "Team Analytics",
-    estimatedTime: "3-4 minutes",
-    includes: ["Individual metrics", "Team efficiency", "Task velocity", "Quality scores"],
+    id: "workload",
+    name: "Reporte de Carga de Trabajo",
+    description: "Visualiza la asignación de recursos y la carga de trabajo del personal",
+    category: "Recursos Humanos",
+    estimatedTime: "3-4 minutos",
   },
   {
-    id: "time-tracking",
-    name: "Time Tracking Report",
-    description: "Detailed time allocation and productivity analysis",
-    category: "Time Management",
-    estimatedTime: "1-2 minutes",
-    includes: ["Hours logged", "Time distribution", "Productivity trends", "Overtime analysis"],
+    id: "schedule",
+    name: "Reporte de Cronograma",
+    description: "Ofrece una vista del cronograma del proyecto con fechas de inicio y finalización",
+    category: "Planificación",
+    estimatedTime: "2-3 minutos",
   },
-  {
-    id: "budget-analysis",
-    name: "Budget Analysis Report",
-    description: "Financial overview and budget utilization across projects",
-    category: "Financial",
-    estimatedTime: "2-3 minutes",
-    includes: ["Budget vs actual", "Cost breakdown", "Resource costs", "ROI analysis"],
-  },
+]
+
+const projects = [
+  "Rediseño del Sitio Web",
+  "Desarrollo de App Móvil",
+  "Campaña de Marketing",
+  "Actualización de Infraestructura",
+  "Sistema de Gestión",
+  "Plataforma E-commerce",
 ]
 
 const recentReports = [
   {
     id: "1",
-    name: "Q4 Project Summary",
-    type: "Project Summary Report",
+    name: "Resumen Proyecto Q4",
+    type: "Reporte de Progreso de Tareas",
     generatedDate: "2024-01-08",
-    status: "completed",
+    status: "completado",
     size: "2.4 MB",
   },
   {
     id: "2",
-    name: "December Team Performance",
-    type: "Team Performance Report",
+    name: "Carga de Trabajo Diciembre",
+    type: "Reporte de Carga de Trabajo",
     generatedDate: "2024-01-05",
-    status: "completed",
+    status: "completado",
     size: "1.8 MB",
   },
   {
     id: "3",
-    name: "Weekly Time Analysis",
-    type: "Time Tracking Report",
+    name: "Cronograma Semanal",
+    type: "Reporte de Cronograma",
     generatedDate: "2024-01-03",
-    status: "completed",
+    status: "completado",
     size: "956 KB",
   },
 ]
 
 export function ReportsGenerator() {
-  const [selectedTemplate, setSelectedTemplate] = useState("")
-  const [reportName, setReportName] = useState("")
+  const [selectedProject, setSelectedProject] = useState("") // Changed to single project selection
+  const [selectedReportType, setSelectedReportType] = useState("")
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({})
-  const [selectedProjects, setSelectedProjects] = useState<string[]>([])
-  const [selectedTeams, setSelectedTeams] = useState<string[]>([])
   const [outputFormat, setOutputFormat] = useState("pdf")
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -100,254 +96,188 @@ export function ReportsGenerator() {
     // Simulate report generation
     setTimeout(() => {
       setIsGenerating(false)
-      console.log("Report generated:", {
-        template: selectedTemplate,
-        name: reportName,
-        dateRange,
-        projects: selectedProjects,
-        teams: selectedTeams,
-        format: outputFormat,
-      })
+      // Simulate file download
+      const fileName = `reporte_${selectedProject.replace(/\s+/g, "_")}_${format(new Date(), "yyyy-MM-dd")}.${outputFormat}`
+      console.log("Descargando reporte:", fileName)
     }, 3000)
   }
-
-  const projects = ["Website Redesign", "Mobile App Development", "Marketing Campaign", "Infrastructure Upgrade"]
-  const teams = ["Frontend", "Backend", "Design", "QA", "DevOps", "Marketing"]
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-balance">Reports & Analytics</h1>
+          <h1 className="text-3xl font-bold text-balance">Generación de Reportes Personalizados</h1>
           <p className="text-muted-foreground text-pretty">
-            Generate comprehensive reports and export data for analysis
+            Genere y descargue reportes personalizados en diferentes formatos para análisis de datos
           </p>
         </div>
         <Button variant="outline">
           <FileText className="mr-2 h-4 w-4" />
-          View All Reports
+          Ver Todos los Reportes
         </Button>
       </div>
 
       <Tabs defaultValue="generate" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="generate">Generate Report</TabsTrigger>
-          <TabsTrigger value="recent">Recent Reports</TabsTrigger>
-          <TabsTrigger value="scheduled">Scheduled Reports</TabsTrigger>
+          <TabsTrigger value="generate">Generar Reporte</TabsTrigger>
+          <TabsTrigger value="recent">Reportes Recientes</TabsTrigger>
+          <TabsTrigger value="scheduled">Reportes Programados</TabsTrigger>
         </TabsList>
 
         <TabsContent value="generate" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Report Templates */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Select Report Template</CardTitle>
-                <CardDescription>Choose from pre-built report templates or create a custom report</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {reportTemplates.map((template) => (
-                  <div
-                    key={template.id}
-                    className={cn(
-                      "p-4 border rounded-lg cursor-pointer transition-colors",
-                      selectedTemplate === template.id ? "border-primary bg-primary/5" : "hover:bg-muted/50",
-                    )}
-                    onClick={() => setSelectedTemplate(template.id)}
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium">{template.name}</h4>
-                        <Badge variant="outline">{template.category}</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{template.description}</p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>{template.estimatedTime}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {template.includes.map((item) => (
-                          <Badge key={item} variant="secondary" className="text-xs">
-                            {item}
-                          </Badge>
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuración del Reporte</CardTitle>
+              <CardDescription>
+                Seleccione el proyecto, tipo de reporte y parámetros para generar su informe personalizado
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="project">Proyecto *</Label>
+                    <Select value={selectedProject} onValueChange={setSelectedProject}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar proyecto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project} value={project}>
+                            {project}
+                          </SelectItem>
                         ))}
-                      </div>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label>Tipo de Reporte *</Label>
+                    <RadioGroup value={selectedReportType} onValueChange={setSelectedReportType}>
+                      {reportTypes.map((type) => (
+                        <div key={type.id} className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value={type.id} id={type.id} />
+                            <Label htmlFor={type.id} className="font-medium">
+                              {type.name}
+                            </Label>
+                          </div>
+                          <p className="text-sm text-muted-foreground ml-6">{type.description}</p>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Rango de Fechas</Label>
+                    <div className="grid grid-cols-1 gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "justify-start text-left font-normal",
+                              !dateRange.from && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {dateRange.from ? format(dateRange.from, "PPP", { locale: es }) : "Fecha de inicio"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={dateRange.from}
+                            onSelect={(date) => setDateRange((prev) => ({ ...prev, from: date }))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "justify-start text-left font-normal",
+                              !dateRange.to && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {dateRange.to ? format(dateRange.to, "PPP", { locale: es }) : "Fecha de finalización"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={dateRange.to}
+                            onSelect={(date) => setDateRange((prev) => ({ ...prev, to: date }))}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
 
-            {/* Report Configuration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Report Configuration</CardTitle>
-                <CardDescription>Customize your report parameters and filters</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reportName">Report Name</Label>
-                  <Input
-                    id="reportName"
-                    placeholder="Enter report name"
-                    value={reportName}
-                    onChange={(e) => setReportName(e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Date Range</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "justify-start text-left font-normal",
-                            !dateRange.from && "text-muted-foreground",
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {dateRange.from ? format(dateRange.from, "PPP") : "Start date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={dateRange.from}
-                          onSelect={(date) => setDateRange((prev) => ({ ...prev, from: date }))}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "justify-start text-left font-normal",
-                            !dateRange.to && "text-muted-foreground",
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {dateRange.to ? format(dateRange.to, "PPP") : "End date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={dateRange.to}
-                          onSelect={(date) => setDateRange((prev) => ({ ...prev, to: date }))}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Projects</Label>
                   <div className="space-y-2">
-                    {projects.map((project) => (
-                      <div key={project} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={project}
-                          checked={selectedProjects.includes(project)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedProjects([...selectedProjects, project])
-                            } else {
-                              setSelectedProjects(selectedProjects.filter((p) => p !== project))
-                            }
-                          }}
-                        />
-                        <Label htmlFor={project} className="text-sm">
-                          {project}
-                        </Label>
-                      </div>
-                    ))}
+                    <Label>Formato de Archivo</Label>
+                    <Select value={outputFormat} onValueChange={setOutputFormat}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar formato" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pdf">
+                          <div className="flex items-center gap-2">
+                            <FilePdf className="h-4 w-4" />
+                            PDF
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="xlsx">
+                          <div className="flex items-center gap-2">
+                            <FileSpreadsheet className="h-4 w-4" />
+                            XLSX
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="csv">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            CSV
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label>Teams</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {teams.map((team) => (
-                      <div key={team} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={team}
-                          checked={selectedTeams.includes(team)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedTeams([...selectedTeams, team])
-                            } else {
-                              setSelectedTeams(selectedTeams.filter((t) => t !== team))
-                            }
-                          }}
-                        />
-                        <Label htmlFor={team} className="text-sm">
-                          {team}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
+                  <Button
+                    onClick={handleGenerateReport}
+                    disabled={!selectedProject || !selectedReportType || isGenerating}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generando Reporte...
+                      </>
+                    ) : (
+                      <>
+                        <BarChart3 className="mr-2 h-4 w-4" />
+                        Generar Reporte
+                      </>
+                    )}
+                  </Button>
                 </div>
-
-                <div className="space-y-2">
-                  <Label>Output Format</Label>
-                  <Select value={outputFormat} onValueChange={setOutputFormat}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select format" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pdf">
-                        <div className="flex items-center gap-2">
-                          <FilePdf className="h-4 w-4" />
-                          PDF Document
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="excel">
-                        <div className="flex items-center gap-2">
-                          <FileSpreadsheet className="h-4 w-4" />
-                          Excel Spreadsheet
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="csv">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          CSV File
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button
-                  onClick={handleGenerateReport}
-                  disabled={!selectedTemplate || !reportName || isGenerating}
-                  className="w-full"
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      Generating Report...
-                    </>
-                  ) : (
-                    <>
-                      <BarChart3 className="mr-2 h-4 w-4" />
-                      Generate Report
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="recent">
           <Card>
             <CardHeader>
-              <CardTitle>Recent Reports</CardTitle>
-              <CardDescription>Download and manage your previously generated reports</CardDescription>
+              <CardTitle>Reportes Recientes</CardTitle>
+              <CardDescription>Descargue y gestione sus reportes generados anteriormente</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -358,16 +288,16 @@ export function ReportsGenerator() {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>{report.type}</span>
                         <span>•</span>
-                        <span>Generated {report.generatedDate}</span>
+                        <span>Generado {format(new Date(report.generatedDate), "PPP", { locale: es })}</span>
                         <span>•</span>
                         <span>{report.size}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">Completed</Badge>
+                      <Badge variant="outline">Completado</Badge>
                       <Button variant="outline" size="sm">
                         <Download className="h-4 w-4 mr-2" />
-                        Download
+                        Descargar
                       </Button>
                     </div>
                   </div>
@@ -380,15 +310,15 @@ export function ReportsGenerator() {
         <TabsContent value="scheduled">
           <Card>
             <CardHeader>
-              <CardTitle>Scheduled Reports</CardTitle>
-              <CardDescription>Set up automatic report generation on a recurring schedule</CardDescription>
+              <CardTitle>Reportes Programados</CardTitle>
+              <CardDescription>Configure la generación automática de reportes de forma recurrente</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No scheduled reports configured yet.</p>
+                <p className="text-muted-foreground">No hay reportes programados configurados aún.</p>
                 <Button className="mt-4">
                   <Target className="mr-2 h-4 w-4" />
-                  Schedule New Report
+                  Programar Nuevo Reporte
                 </Button>
               </div>
             </CardContent>

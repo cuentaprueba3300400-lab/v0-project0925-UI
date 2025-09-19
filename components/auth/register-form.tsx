@@ -31,7 +31,7 @@ export function RegisterForm() {
     setError("")
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match")
+      setError("Las contraseñas no coinciden")
       setIsLoading(false)
       return
     }
@@ -58,12 +58,12 @@ export function RegisterForm() {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
+          <Label htmlFor="firstName">Nombre</Label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="firstName"
-              placeholder="First name"
+              placeholder="Nombre"
               value={formData.firstName}
               onChange={(e) => updateFormData("firstName", e.target.value)}
               className="pl-10"
@@ -73,10 +73,10 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
+          <Label htmlFor="lastName">Apellido</Label>
           <Input
             id="lastName"
-            placeholder="Last name"
+            placeholder="Apellido"
             value={formData.lastName}
             onChange={(e) => updateFormData("lastName", e.target.value)}
             required
@@ -85,13 +85,13 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Correo Electrónico</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Ingresa tu correo electrónico"
             value={formData.email}
             onChange={(e) => updateFormData("email", e.target.value)}
             className="pl-10"
@@ -101,28 +101,28 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
+        <Label htmlFor="role">Rol</Label>
         <Select value={formData.role} onValueChange={(value) => updateFormData("role", value)}>
           <SelectTrigger>
-            <SelectValue placeholder="Select your role" />
+            <SelectValue placeholder="Selecciona tu rol" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="project-manager">Project Manager</SelectItem>
-            <SelectItem value="team-lead">Team Lead</SelectItem>
-            <SelectItem value="developer">Developer</SelectItem>
-            <SelectItem value="designer">Designer</SelectItem>
-            <SelectItem value="admin">Administrator</SelectItem>
+            <SelectItem value="project-manager">Gerente de Proyecto</SelectItem>
+            <SelectItem value="team-lead">Líder de Equipo</SelectItem>
+            <SelectItem value="developer">Desarrollador</SelectItem>
+            <SelectItem value="designer">Diseñador</SelectItem>
+            <SelectItem value="admin">Administrador</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="company">Company</Label>
+        <Label htmlFor="company">Empresa</Label>
         <div className="relative">
           <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="company"
-            placeholder="Company name"
+            placeholder="Nombre de la empresa"
             value={formData.company}
             onChange={(e) => updateFormData("company", e.target.value)}
             className="pl-10"
@@ -132,13 +132,13 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Contraseña</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Create a password"
+            placeholder="Crea una contraseña"
             value={formData.password}
             onChange={(e) => updateFormData("password", e.target.value)}
             className="pl-10 pr-10"
@@ -161,13 +161,13 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
+        <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="confirmPassword"
             type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm your password"
+            placeholder="Confirma tu contraseña"
             value={formData.confirmPassword}
             onChange={(e) => updateFormData("confirmPassword", e.target.value)}
             className="pl-10 pr-10"
@@ -190,7 +190,7 @@ export function RegisterForm() {
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Creating account..." : "Create Account"}
+        {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
       </Button>
     </form>
   )

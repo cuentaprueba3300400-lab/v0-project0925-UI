@@ -13,8 +13,9 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "ProjectFlow - Project Management System",
-  description: "Professional project management application with Gantt charts, task management, and team collaboration",
+  title: "ProjectFlow - Sistema de Gestión de Proyectos",
+  description:
+    "Aplicación profesional de gestión de proyectos con diagramas de Gantt, gestión de tareas y colaboración en equipo",
   generator: "v0.app",
 }
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={`font-sans ${dmSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={null}>{children}</Suspense>
         <Analytics />

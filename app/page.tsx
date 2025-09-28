@@ -13,7 +13,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-primary">ProjectFlow</h1>
+          <h1 className="text-3xl font-bold text-primary">Banda Ancha</h1>
           <p className="text-muted-foreground">Sistema Profesional de Gestión de Proyectos y Logística</p>
         </div>
 

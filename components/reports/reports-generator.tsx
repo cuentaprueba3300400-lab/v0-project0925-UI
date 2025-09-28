@@ -10,6 +10,15 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   FileText,
   Download,
@@ -19,6 +28,10 @@ import {
   FileSpreadsheet,
   FilePen as FilePdf,
   Loader2,
+  Search,
+  ArrowUpDown,
+  Eye,
+  Trash2,
 } from "lucide-react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -84,23 +97,160 @@ const recentReports = [
   },
 ]
 
+const allReports = [
+  {
+    id: "1",
+    name: "Resumen Proyecto Q4",
+    type: "Reporte de Progreso de Tareas",
+    generatedDate: "2024-01-08",
+    status: "completado",
+    size: "2.4 MB",
+    team: "Desarrollo Frontend",
+    personnel: "Ana García, Carlos López",
+    project: "Rediseño del Sitio Web",
+    format: "PDF",
+  },
+  {
+    id: "2",
+    name: "Carga de Trabajo Diciembre",
+    type: "Reporte de Carga de Trabajo",
+    generatedDate: "2024-01-05",
+    status: "completado",
+    size: "1.8 MB",
+    team: "Recursos Humanos",
+    personnel: "María Rodríguez, Juan Pérez",
+    project: "Sistema de Gestión",
+    format: "XLSX",
+  },
+  {
+    id: "3",
+    name: "Cronograma Semanal",
+    type: "Reporte de Cronograma",
+    generatedDate: "2024-01-03",
+    status: "completado",
+    size: "956 KB",
+    team: "Planificación",
+    personnel: "Luis Martín",
+    project: "Desarrollo de App Móvil",
+    format: "PDF",
+  },
+  {
+    id: "4",
+    name: "Análisis de Rendimiento Q1",
+    type: "Reporte de Progreso de Tareas",
+    generatedDate: "2024-01-15",
+    status: "completado",
+    size: "3.2 MB",
+    team: "Desarrollo Backend",
+    personnel: "Pedro Sánchez, Elena Torres",
+    project: "Plataforma E-commerce",
+    format: "PDF",
+  },
+  {
+    id: "5",
+    name: "Distribución de Recursos",
+    type: "Reporte de Carga de Trabajo",
+    generatedDate: "2024-01-12",
+    status: "completado",
+    size: "1.5 MB",
+    team: "Gestión de Proyectos",
+    personnel: "Roberto Silva, Carmen Vega",
+    project: "Campaña de Marketing",
+    format: "XLSX",
+  },
+  {
+    id: "6",
+    name: "Planificación Mensual",
+    type: "Reporte de Cronograma",
+    generatedDate: "2024-01-10",
+    status: "completado",
+    size: "2.1 MB",
+    team: "Operaciones",
+    personnel: "Diego Morales, Sofía Ruiz",
+    project: "Actualización de Infraestructura",
+    format: "CSV",
+  },
+  {
+    id: "7",
+    name: "Estado de Tareas Críticas",
+    type: "Reporte de Progreso de Tareas",
+    generatedDate: "2024-01-07",
+    status: "completado",
+    size: "1.9 MB",
+    team: "QA Testing",
+    personnel: "Andrea Jiménez, Miguel Castro",
+    project: "Sistema de Gestión",
+    format: "PDF",
+  },
+  {
+    id: "8",
+    name: "Asignación de Personal",
+    type: "Reporte de Carga de Trabajo",
+    generatedDate: "2024-01-04",
+    status: "completado",
+    size: "2.7 MB",
+    team: "Recursos Humanos",
+    personnel: "Natalia Herrera, Javier Ortiz",
+    project: "Rediseño del Sitio Web",
+    format: "XLSX",
+  },
+]
+
 export function ReportsGenerator() {
-  const [selectedProject, setSelectedProject] = useState("") // Changed to single project selection
+  const [selectedProject, setSelectedProject] = useState("")
   const [selectedReportType, setSelectedReportType] = useState("")
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({})
   const [outputFormat, setOutputFormat] = useState("pdf")
   const [isGenerating, setIsGenerating] = useState(false)
 
+  const [showAllReports, setShowAllReports] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filterType, setFilterType] = useState("all")
+  const [filterTeam, setFilterTeam] = useState("all")
+  const [sortBy, setSortBy] = useState("date")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+
   const handleGenerateReport = async () => {
     setIsGenerating(true)
-    // Simulate report generation
     setTimeout(() => {
       setIsGenerating(false)
-      // Simulate file download
       const fileName = `reporte_${selectedProject.replace(/\s+/g, "_")}_${format(new Date(), "yyyy-MM-dd")}.${outputFormat}`
       console.log("Descargando reporte:", fileName)
     }, 3000)
   }
+
+  const filteredAndSortedReports = allReports
+    .filter((report) => {
+      const matchesSearch =
+        report.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        report.personnel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        report.project.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesType = filterType === "all" || report.type === filterType
+      const matchesTeam = filterTeam === "all" || report.team === filterTeam
+      return matchesSearch && matchesType && matchesTeam
+    })
+    .sort((a, b) => {
+      let comparison = 0
+      switch (sortBy) {
+        case "name":
+          comparison = a.name.localeCompare(b.name)
+          break
+        case "date":
+          comparison = new Date(a.generatedDate).getTime() - new Date(b.generatedDate).getTime()
+          break
+        case "team":
+          comparison = a.team.localeCompare(b.team)
+          break
+        case "type":
+          comparison = a.type.localeCompare(b.type)
+          break
+        default:
+          comparison = 0
+      }
+      return sortOrder === "asc" ? comparison : -comparison
+    })
+
+  const uniqueTeams = [...new Set(allReports.map((report) => report.team))]
 
   return (
     <div className="space-y-6">
@@ -111,10 +261,131 @@ export function ReportsGenerator() {
             Genere y descargue reportes personalizados en diferentes formatos para análisis de datos
           </p>
         </div>
-        <Button variant="outline">
-          <FileText className="mr-2 h-4 w-4" />
-          Ver Todos los Reportes
-        </Button>
+        <Dialog open={showAllReports} onOpenChange={setShowAllReports}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <FileText className="mr-2 h-4 w-4" />
+              Ver Todos los Reportes
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-hidden">
+            <DialogHeader>
+              <DialogTitle>Todos los Reportes</DialogTitle>
+              <DialogDescription>Gestione y filtre todos los reportes generados en el sistema</DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="flex gap-4 items-center">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Buscar por nombre, personal o proyecto..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Tipo de reporte" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los tipos</SelectItem>
+                    {reportTypes.map((type) => (
+                      <SelectItem key={type.id} value={type.name}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={filterTeam} onValueChange={setFilterTeam}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Equipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los equipos</SelectItem>
+                    {uniqueTeams.map((team) => (
+                      <SelectItem key={team} value={team}>
+                        {team}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Ordenar por" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date">Fecha</SelectItem>
+                    <SelectItem value="name">Nombre</SelectItem>
+                    <SelectItem value="team">Equipo</SelectItem>
+                    <SelectItem value="type">Tipo</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}>
+                  <ArrowUpDown className="h-4 w-4" />
+                  {sortOrder === "asc" ? "Asc" : "Desc"}
+                </Button>
+              </div>
+
+              <div className="border rounded-lg overflow-hidden">
+                <div className="max-h-96 overflow-y-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50 sticky top-0">
+                      <tr>
+                        <th className="text-left p-3 font-medium">Nombre</th>
+                        <th className="text-left p-3 font-medium">Tipo</th>
+                        <th className="text-left p-3 font-medium">Equipo</th>
+                        <th className="text-left p-3 font-medium">Personal</th>
+                        <th className="text-left p-3 font-medium">Proyecto</th>
+                        <th className="text-left p-3 font-medium">Fecha</th>
+                        <th className="text-left p-3 font-medium">Tamaño</th>
+                        <th className="text-left p-3 font-medium">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredAndSortedReports.map((report) => (
+                        <tr key={report.id} className="border-t hover:bg-muted/25">
+                          <td className="p-3">
+                            <div className="font-medium">{report.name}</div>
+                            <div className="text-sm text-muted-foreground">{report.format}</div>
+                          </td>
+                          <td className="p-3">
+                            <Badge variant="outline" className="text-xs">
+                              {report.type.split(" ")[2]}
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-sm">{report.team}</td>
+                          <td className="p-3 text-sm">{report.personnel}</td>
+                          <td className="p-3 text-sm">{report.project}</td>
+                          <td className="p-3 text-sm">{format(new Date(report.generatedDate), "dd/MM/yyyy")}</td>
+                          <td className="p-3 text-sm">{report.size}</td>
+                          <td className="p-3">
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Download className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="text-sm text-muted-foreground">
+                Mostrando {filteredAndSortedReports.length} de {allReports.length} reportes
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Tabs defaultValue="generate" className="space-y-4">
